@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Optimizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    input, button {
+      padding: 12px;
+      margin-top: 15px;
+      width: 90%;
+      max-width: 320px;
+    }
+
+    button {
+      background: #00c853;
+      border: none;
+      color: white;
+      font-weight: bold;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #00e5ff;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎬 Video Optimizer</h2>
+
+  <input type="file" id="video" accept="video/*" />
+  <br>
+  <button onclick="uploadVideo()">Optimize Video</button>
+
+  <p id="status"></p>
+  <div id="result"></div>
+
+  <script>
+    async function uploadVideo() {
+      const file = document.getElementById("video").files[0];
+
+      if (!file) {
+        alert("Select a video first");
+        return;
+      }
+
+      document.getElementById("status").innerText = "Processing...";
+
+      const formData = new FormData();
+      formData.append("video", file);
+
+      const res = await fetch("/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+
+      document.getElementById("status").innerText = "Done!";
+
+      const link = document.createElement("a");
+      link.href = "/outputs/" + data.file;
+      link.innerText = "⬇ Download Optimized Video";
+      link.download = "optimized.mp4";
+
+      document.getElementById("result").appendChild(link);
+    }
+  </script>
+
+</body>
+</html>
